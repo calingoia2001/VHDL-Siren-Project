@@ -1,0 +1,175 @@
+----------------------------------------------------------------------------------
+-- Company: 
+-- Engineer: 
+-- 
+-- Create Date: 04/20/2022 06:16:30 PM
+-- Design Name: 
+-- Module Name: fsm - Behavioral
+-- Project Name: 
+-- Target Devices: 
+-- Tool Versions: 
+-- Description: 
+-- 
+-- Dependencies: 
+-- 
+-- Revision:
+-- Revision 0.01 - File Created
+-- Additional Comments:
+-- 
+----------------------------------------------------------------------------------
+
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+use IEEE.NUMERIC_STD.ALL;
+
+-- Uncomment the following library declaration if instantiating
+-- any Xilinx leaf cells in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
+
+entity fsm is
+    Port ( clk : in STD_LOGIC;
+           clk1:inout STD_LOGIC;
+           rst : in STD_LOGIC;
+           sout1:inout STD_LOGIC;
+           sout2:inout STD_LOGIC;
+           sout3:inout STD_LOGIC;
+           sout4:inout STD_LOGIC;
+           sout5:inout STD_LOGIC;
+           sout : out STD_LOGIC);
+end fsm;
+
+architecture Behavioral of fsm is
+
+component clock_divider is
+    Port ( clk : in STD_LOGIC;
+           factor : integer;
+           clkout : out STD_LOGIC);
+end  component clock_divider;
+
+
+type states is (start,stare1, stare2,  stare3, stare4, stare5, stare6, stare7, stare8, stare9, stare10, stare11);
+
+signal state: states;
+
+
+constant clkfrequency:integer:=100000000;--100MHZ
+
+signal Ticks : integer;
+signal Seconds : integer;
+
+signal Ticks2 : integer;
+signal seconds_04 : integer;
+
+
+
+
+begin
+
+processclk1: clock_divider port map(clk=>clk,factor=>10**7 ,clkout=>clk1);
+sout_20kHz: clock_divider port map(clk=>clk,factor=>25*10**2 ,clkout=>sout1);
+sout_4kHz: clock_divider port map(clk=>clk,factor=>125*10**2 ,clkout=>sout2);
+sout_800Hz: clock_divider port map(clk=>clk,factor=>625*10**2 ,clkout=>sout3);
+sout_160Hz: clock_divider port map(clk=>clk,factor=>3125*10**2 ,clkout=>sout4);
+sout_32Hz: clock_divider port map(clk=>clk,factor=>15625*10**2 ,clkout=>sout5);
+
+
+process(clk1,rst) is
+begin
+    if rising_edge(clk1) then
+        if rst = '0' then
+           state <= start;
+        else
+            case state is
+                when start =>
+                    sout<='0';
+                   -- if seconds_04 = 5 then  
+                     state <= stare1;
+                   -- end if;
+                    
+                    
+                when stare1=>
+                
+                   sout<=sout1;
+                 --if seconds_04=6 then 
+                      state<=stare2;
+                   -- end if;
+                    
+                    
+                 when stare2=>
+                     
+                           sout<=sout2;
+                          -- if seconds_04=7 then 
+                           state<=stare3;
+                   -- end if;
+                    
+                    
+                    --Semanl de iesire
+                 when stare3=>
+                    sout<=sout3;
+                  -- if seconds_04=8 then 
+                     state<=stare4;
+                  --   end if;
+                       
+                                           
+                when stare4=>
+                   sout<=sout4;
+                  -- if seconds_04=9 then 
+                         state<=stare5;
+                 -- end if; 
+                  
+                  
+               when stare5=>
+                 sout<=sout5;
+               --  if seconds_04=10 then 
+                        state<=stare6;
+                 --end if;
+                 
+                 
+               when stare6=>
+               -- if seconds_04=15 then 
+                    state<=stare7;
+                     -- end if;
+                           
+                           
+                 when stare7=>
+                 sout<=sout5;
+                   --if seconds_04=16 then 
+                    state<=stare8;
+                   --end if;  
+                   
+                    
+                when stare8=>
+                    sout<=sout4;
+                   -- if seconds_04=17 then 
+                         state<=stare9;  
+                   -- end if;  
+                    
+                                                         
+                 when stare9=>
+                    sout<=sout3;
+                  -- if seconds_04=18 then 
+                             state<=stare10;  
+                   -- end if;  
+                    
+                      
+                  when stare10=>
+                         sout<=sout2;
+                    -- if seconds_04=19 then 
+                         state<=stare11;  
+                 -- end if;   
+                  
+                  when stare11=>
+                        sout<=sout1;
+    
+                    state<=stare1;                                                                      
+            end case;
+        end if;
+    end if;
+end process;
+
+end Behavioral;
